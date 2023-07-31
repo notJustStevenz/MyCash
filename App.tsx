@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+
+// react navigation
+import RootStack from './navigators/RootStack';
+
+SplashScreen.preventAutoHideAsync();
+
+export default function Layout() {
+  // Load the font `Inter_500Medium`
+  const [fontsLoaded] = useFonts({
+    "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
+    "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      // Hide the splash screen after the fonts have loaded and the
+      // UI is ready.
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  // Prevent rendering until the font has loaded
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  // Render the children routes now that all the assets are loaded.
+  return <RootStack />;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// export default function App() {
+//   let [fontsLoaded] = useFonts({
+//     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
+//     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
+//   });
+
+//   if (!fontsLoaded) {
+//     return <AppLoading />;
+//   };
+
+//   return (
+//     <RootStack/>
+//   );
+// }
